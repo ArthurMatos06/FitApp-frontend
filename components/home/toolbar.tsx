@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { headers } from "next/headers";
+import { connection } from "next/server";
 import dayjs from "dayjs";
 import {
   Calendar,
@@ -14,11 +14,11 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 type ToolbarProps = {
-  activeItem?: "home" | "workouts";
+  activeItem?: "home" | "workouts" | "stats";
 };
 
 export async function Toolbar({ activeItem = "home" }: ToolbarProps) {
-  await headers();
+  await connection();
   const today = dayjs().format("YYYY-MM-DD");
   const response = await getHomeData(today);
   const todayWorkoutDay =
@@ -68,8 +68,20 @@ export async function Toolbar({ activeItem = "home" }: ToolbarProps) {
       <Button className="size-14 rounded-full" aria-label="FIT.AI">
         <Sparkles className="size-6 text-primary-foreground" />
       </Button>
-      <Button variant="ghost" className="size-12" aria-label="Estatísticas">
-        <ChartNoAxesColumn className="size-6 text-muted-foreground" />
+      <Button
+        variant="ghost"
+        className="size-12"
+        render={<Link href="/stats" />}
+        aria-label="Estatísticas"
+      >
+        <ChartNoAxesColumn
+          className={cn(
+            "size-6",
+            activeItem === "stats"
+              ? "text-foreground"
+              : "text-muted-foreground",
+          )}
+        />
       </Button>
       <Button variant="ghost" className="size-12" aria-label="Perfil">
         <UserRound className="size-6 text-muted-foreground" />
