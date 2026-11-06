@@ -24,6 +24,11 @@ export async function Toolbar({ activeItem = "home" }: ToolbarProps) {
   const todayWorkoutDay =
     response.status === 200 ? response.data.todayWorkoutDay : undefined;
 
+  const workoutHref =
+    response.status === 200 && todayWorkoutDay
+      ? `/workout-plans/${todayWorkoutDay.workoutPlanId}`
+      : null;
+
   return (
     <nav className="fixed inset-x-0 bottom-0 z-10 flex h-[88px] items-center justify-center gap-6 rounded-t-[20px] border border-border bg-background px-6 py-4">
       <Button
@@ -35,21 +40,15 @@ export async function Toolbar({ activeItem = "home" }: ToolbarProps) {
         <House
           className={cn(
             "size-6",
-            activeItem === "home"
-              ? "text-foreground"
-              : "text-muted-foreground",
+            activeItem === "home" ? "text-foreground" : "text-muted-foreground",
           )}
         />
       </Button>
-      {todayWorkoutDay ? (
+      {workoutHref ? (
         <Button
           variant="ghost"
           className="size-12"
-          render={
-            <Link
-              href={`/workout-plans/${todayWorkoutDay.workoutPlanId}/days/${todayWorkoutDay.id}`}
-            />
-          }
+          render={<Link href={workoutHref} />}
           aria-label="Treinos"
         >
           <Calendar
