@@ -30,7 +30,6 @@ Não há testes. NUNCA rode `pnpm run dev` para verificar se as mudanças funcio
 - `app/` — rotas (App Router); `app/_lib/` — `fetch.ts` (mutator `customFetch`), `auth-client.ts`, `api/fetch-generated/` (saída do Orval, NÃO editar à mão)
 - `components/` — componentes da aplicação; `components/ui/` — componentes shadcn/ui
 - `lib/utils.ts` — `cn`
-- `tasks/` — briefs numerados com links do Figma que guiam o desenvolvimento atual
 - `.claude/rules/` — regras originais em PT-BR (fonte destas convenções); detalhes de formulários/mutations em `.claude/rules/api.md`
 - `public/` — imagens e banners
 
