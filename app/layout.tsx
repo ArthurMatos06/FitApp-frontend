@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Anton, Geist, Geist_Mono, Inter_Tight } from "next/font/google";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "./globals.css";
+
+import { AiChat } from "@/components/chat/ai-chat";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,9 +42,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${interTight.variable} ${anton.variable} antialiased`}
       >
-          {children}
-          <Suspense>
-          </Suspense>
+          <NuqsAdapter>
+            {children}
+            <Suspense fallback={null}>
+              <AiChat />
+            </Suspense>
+          </NuqsAdapter>
       </body>
     </html>
   );

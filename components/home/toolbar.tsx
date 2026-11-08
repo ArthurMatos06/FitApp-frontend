@@ -5,29 +5,35 @@ import {
   Calendar,
   ChartNoAxesColumn,
   House,
-  Sparkles,
   UserRound,
 } from "lucide-react";
 
-import { getHomeData } from "@/app/_lib/api/fetch-generated";
+import { getHomeData, type GetHomeData200TodayWorkoutDay } from "@/app/_lib/api/fetch-generated";
+import { AiChatButton } from "@/components/home/ai-chat-button";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 type ToolbarProps = {
-  activeItem?: "home" | "workouts" | "stats";
+  activeItem?: "home" | "workouts" | "stats" | "profile";
 };
 
 export async function Toolbar({ activeItem = "home" }: ToolbarProps) {
   await connection();
   const today = dayjs().format("YYYY-MM-DD");
-  const response = await getHomeData(today);
-  const todayWorkoutDay =
-    response.status === 200 ? response.data.todayWorkoutDay : undefined;
 
-  const workoutHref =
-    response.status === 200 && todayWorkoutDay
-      ? `/workout-plans/${todayWorkoutDay.workoutPlanId}`
-      : null;
+  let todayWorkoutDay: GetHomeData200TodayWorkoutDay | undefined;
+
+  try {
+    const response = await getHomeData(today);
+    todayWorkoutDay =
+      response.status === 200 ? response.data.todayWorkoutDay : undefined;
+  } catch {
+    todayWorkoutDay = undefined;
+  }
+
+  const workoutHref = todayWorkoutDay
+    ? `/workout-plans/${todayWorkoutDay.workoutPlanId}`
+    : null;
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-10 flex h-[88px] items-center justify-center gap-6 rounded-t-[20px] border border-border bg-background px-6 py-4">
@@ -65,9 +71,7 @@ export async function Toolbar({ activeItem = "home" }: ToolbarProps) {
           <Calendar className="size-6 text-muted-foreground" />
         </Button>
       )}
-      <Button className="size-14 rounded-full" aria-label="FIT.AI">
-        <Sparkles className="size-6 text-primary-foreground" />
-      </Button>
+      <AiChatButton />
       <Button
         variant="ghost"
         className="size-12"
@@ -83,8 +87,20 @@ export async function Toolbar({ activeItem = "home" }: ToolbarProps) {
           )}
         />
       </Button>
-      <Button variant="ghost" className="size-12" aria-label="Perfil">
-        <UserRound className="size-6 text-muted-foreground" />
+      <Button
+        variant="ghost"
+        className="size-12"
+        render={<Link href="/profile" />}
+        aria-label="Perfil"
+      >
+        <UserRound
+          className={cn(
+            "size-6",
+            activeItem === "profile"
+              ? "text-foreground"
+              : "text-muted-foreground",
+          )}
+        />
       </Button>
     </nav>
   );

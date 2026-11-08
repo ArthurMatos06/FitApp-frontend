@@ -23,6 +23,7 @@ async function HomeContent() {
 
   const today = dayjs().format("YYYY-MM-DD");
   const response = await getHomeData(today);
+  // console.log(response)
 
   if (response.status === 401) redirect("/auth");
   if (response.status !== 200) {

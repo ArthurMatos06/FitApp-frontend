@@ -1,7 +1,7 @@
-import { CircleQuestionMark, Zap } from "lucide-react";
+import { Zap } from "lucide-react";
 
 import type { GetWorkoutDay200ExercisesItem } from "@/app/_lib/api/fetch-generated";
-import { Button } from "@/components/ui/button";
+import { ExerciseHelpButton } from "@/components/workout-plans/exercise-help-button";
 
 type ExerciseCardProps = {
   exercise: GetWorkoutDay200ExercisesItem;
@@ -14,16 +14,7 @@ export function ExerciseCard({ exercise }: ExerciseCardProps) {
         <h3 className="text-base font-semibold leading-[1.4] text-foreground">
           {exercise.name}
         </h3>
-        <Button
-          variant="ghost"
-          className="size-6"
-          aria-label="Detalhes do exercício"
-        >
-          <CircleQuestionMark
-            className="size-5 text-muted-foreground"
-            strokeWidth={1}
-          />
-        </Button>
+        <ExerciseHelpButton exerciseName={exercise.name} />
       </div>
       <div className="flex items-center gap-1.5">
         <span className="flex h-[22px] items-center rounded-full bg-muted px-3 text-xs font-semibold uppercase leading-none text-muted-foreground">

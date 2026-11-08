@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import dayjs from "dayjs";
 
 import { authClient } from "@/app/_lib/auth-client";
-import { getStats } from "@/app/_lib/api/fetch-generated";
+import { getStats, type GetStats200 } from "@/app/_lib/api/fetch-generated";
 import { Toolbar } from "@/components/home/toolbar";
 import { StreakBanner } from "@/components/stats/streak-banner";
 import { StatsSummary } from "@/components/stats/stats-summary";
@@ -24,29 +24,32 @@ async function StatsContent() {
 
   const today = dayjs();
   const currentMonday = today.subtract((today.day() + 6) % 7, "day");
-  const response = await getStats({
-    from: currentMonday.subtract(13 * 7, "day").format("YYYY-MM-DD"),
-    to: today.format("YYYY-MM-DD"),
-  });
 
-  if (response.status === 401) redirect("/auth");
-  if (response.status !== 200) {
-    throw new Error("Não foi possível carregar as estatísticas.");
+  let stats: GetStats200 | null = null;
+
+  try {
+    const response = await getStats({
+      from: currentMonday.subtract(13 * 7, "day").format("YYYY-MM-DD"),
+      to: today.format("YYYY-MM-DD"),
+    });
+
+    if (response.status === 401) redirect("/auth");
+    if (response.status === 200) stats = response.data;
+  } catch {
+    stats = null;
   }
-
-  const stats = response.data;
 
   return (
     <>
-      <StreakBanner streak={stats.workoutStreak} />
+      <StreakBanner streak={stats?.workoutStreak ?? 0} />
       <ConsistencyHeatmap
-        consistencyByDay={stats.consistencyByDay}
+        consistencyByDay={stats?.consistencyByDay ?? {}}
         date={today.format("YYYY-MM-DD")}
       />
       <StatsSummary
-        completedWorkoutsCount={stats.completedWorkoutsCount}
-        conclusionRate={stats.conclusionRate}
-        totalTimeInSeconds={stats.totalTimeInSeconds}
+        completedWorkoutsCount={stats?.completedWorkoutsCount ?? 0}
+        conclusionRate={stats?.conclusionRate ?? 0}
+        totalTimeInSeconds={stats?.totalTimeInSeconds ?? 0}
       />
     </>
   );

@@ -2,6 +2,8 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@source "../node_modules/streamdown/dist";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -30,7 +32,12 @@
   --color-online: var(--online);
   --color-streak: var(--streak);
   --color-streak-foreground: var(--streak-foreground);
+  --color-chat-user: var(--chat-user);
+  --color-chat-bubble: var(--chat-bubble);
+  --color-chat-avatar: var(--chat-avatar);
+  --color-chat-chip: var(--chat-chip);
   --color-destructive: var(--destructive);
+  --color-logout: var(--logout);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
@@ -69,10 +76,15 @@
   --accent: oklch(0.967 0.001 286.375);
   --accent-foreground: oklch(0.21 0.006 285.885);
   --destructive: oklch(0.577 0.245 27.325);
+  --logout: oklch(0.66 0.211 25);
   --border: oklch(0.92 0.004 286.32);
   --input: oklch(0.92 0.004 286.32);
   --ring: oklch(0.708 0 0);
   --online: oklch(0.723 0.219 149.579);
+  --chat-user: oklch(54.2% 0.253 266.8);
+  --chat-bubble: oklch(95.8% 0 89.9);
+  --chat-avatar: oklch(96.1% 0.018 269.1);
+  --chat-chip: oklch(93.2% 0.031 271.7);
   --streak: oklch(0.95 0.05 50);
   --streak-foreground: oklch(0.65 0.2 50);
   --chart-1: oklch(0.809 0.105 251.813);
@@ -106,6 +118,7 @@
   --accent: oklch(0.274 0.006 286.033);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
+  --logout: oklch(0.66 0.211 25);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
