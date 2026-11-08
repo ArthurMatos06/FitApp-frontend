@@ -5,11 +5,13 @@ import dayjs from "dayjs";
 
 import { authClient } from "@/app/_lib/auth-client";
 import { getWorkoutDay } from "@/app/_lib/api/fetch-generated";
+import { ensureOnboardingComplete } from "@/app/_lib/train-readiness";
 import { Toolbar } from "@/components/home/toolbar";
 import { CompleteWorkoutButton } from "@/components/workout-plans/complete-workout-button";
 import { DayTopbar } from "@/components/workout-plans/day-topbar";
 import { ExerciseCard } from "@/components/workout-plans/exercise-card";
 import { StartWorkoutButton } from "@/components/workout-plans/start-workout-button";
+import { WorkoutDaySkeleton } from "@/components/workout-plans/workout-day-skeleton";
 import { WorkoutDayCard } from "@/components/workout-day-card";
 import { Button } from "@/components/ui/button";
 import { WEEK_DAY_LABELS } from "@/lib/week-day-labels";
@@ -38,6 +40,8 @@ async function WorkoutDayContent({ params }: WorkoutDayPageParams) {
   });
 
   if (!session.data?.user) redirect("/auth");
+
+  await ensureOnboardingComplete();
 
   const response = await getWorkoutDay(id, dayid);
 
@@ -105,7 +109,7 @@ async function WorkoutDayContent({ params }: WorkoutDayPageParams) {
 export default function WorkoutDayPage({ params }: WorkoutDayPageParams) {
   return (
     <main className="min-h-svh pb-[108px] font-heading">
-      <Suspense fallback={<p>Carregando...</p>}>
+      <Suspense fallback={<WorkoutDaySkeleton />}>
         <WorkoutDayContent params={params} />
       </Suspense>
       <Suspense fallback={null}>

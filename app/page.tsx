@@ -5,9 +5,10 @@ import { redirect } from "next/navigation";
 import dayjs from "dayjs";
 
 import { authClient } from "@/app/_lib/auth-client";
-import { getHomeData } from "./_lib/api/fetch-generated";
+import { ensureOnboardingComplete } from "./_lib/train-readiness";
 import { ConsistencySection } from "@/components/home/consistency-section";
 import { HomeBanner } from "@/components/home/home-banner";
+import { HomeSkeleton } from "@/components/home/home-skeleton";
 import { SectionHeader } from "@/components/home/section-header";
 import { Toolbar } from "@/components/home/toolbar";
 import { WorkoutDayCard } from "@/components/workout-day-card";
@@ -21,16 +22,8 @@ async function HomeContent() {
 
   if (!session.data?.user) redirect("/auth");
 
+  const { homeData } = await ensureOnboardingComplete();
   const today = dayjs().format("YYYY-MM-DD");
-  const response = await getHomeData(today);
-  // console.log(response)
-
-  if (response.status === 401) redirect("/auth");
-  if (response.status !== 200) {
-    throw new Error("Não foi possível carregar os dados da home.");
-  }
-
-  const homeData = response.data;
 
   return (
     <>
@@ -58,7 +51,7 @@ async function HomeContent() {
 export default function Home() {
   return (
     <main className="min-h-svh pb-[125px] font-heading">
-      <Suspense fallback={<p>Carregando...</p>}>
+      <Suspense fallback={<HomeSkeleton />}>
         <HomeContent />
       </Suspense>
       <Suspense fallback={null}>

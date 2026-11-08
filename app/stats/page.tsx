@@ -6,9 +6,11 @@ import dayjs from "dayjs";
 
 import { authClient } from "@/app/_lib/auth-client";
 import { getStats, type GetStats200 } from "@/app/_lib/api/fetch-generated";
+import { ensureOnboardingComplete } from "@/app/_lib/train-readiness";
 import { Toolbar } from "@/components/home/toolbar";
 import { StreakBanner } from "@/components/stats/streak-banner";
 import { StatsSummary } from "@/components/stats/stats-summary";
+import { StatsSkeleton } from "@/components/stats/stats-skeleton";
 import { ConsistencyHeatmap } from "@/components/stats/consistency-heatmap";
 
 async function StatsContent() {
@@ -21,6 +23,8 @@ async function StatsContent() {
   });
 
   if (!session.data?.user) redirect("/auth");
+
+  await ensureOnboardingComplete();
 
   const today = dayjs();
   const currentMonday = today.subtract((today.day() + 6) % 7, "day");
@@ -58,7 +62,7 @@ async function StatsContent() {
 export default function StatsPage() {
   return (
     <main className="min-h-svh pb-[108px] font-heading">
-      <Suspense fallback={<p>Carregando...</p>}>
+      <Suspense fallback={<StatsSkeleton />}>
         <StatsContent />
       </Suspense>
       <Suspense fallback={null}>

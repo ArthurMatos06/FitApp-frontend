@@ -5,9 +5,11 @@ import { notFound, redirect } from "next/navigation";
 
 import { authClient } from "@/app/_lib/auth-client";
 import { getWorkoutPlanById } from "@/app/_lib/api/fetch-generated";
+import { ensureOnboardingComplete } from "@/app/_lib/train-readiness";
 import { Toolbar } from "@/components/home/toolbar";
 import { PlanBanner } from "@/components/workout-plans/plan-banner";
 import { RestDayCard } from "@/components/workout-plans/rest-day-card";
+import { WorkoutPlanSkeleton } from "@/components/workout-plans/workout-plan-skeleton";
 import { WorkoutDayCard } from "@/components/workout-day-card";
 
 const WEEK_DAY_ORDER = [
@@ -34,6 +36,8 @@ async function WorkoutPlanContent({ params }: WorkoutPlanPageParams) {
   });
 
   if (!session.data?.user) redirect("/auth");
+
+  await ensureOnboardingComplete();
 
   const response = await getWorkoutPlanById(id);
 
@@ -77,7 +81,7 @@ async function WorkoutPlanContent({ params }: WorkoutPlanPageParams) {
 export default function WorkoutPlanPage({ params }: WorkoutPlanPageParams) {
   return (
     <main className="min-h-svh pb-[108px] font-heading">
-      <Suspense fallback={<p>Carregando...</p>}>
+      <Suspense fallback={<WorkoutPlanSkeleton />}>
         <WorkoutPlanContent params={params} />
       </Suspense>
       <Suspense fallback={null}>

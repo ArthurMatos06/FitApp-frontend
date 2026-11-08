@@ -5,10 +5,12 @@ import { redirect } from "next/navigation";
 import { BicepsFlexed, Ruler, Scale, UserRound } from "lucide-react";
 
 import { authClient } from "@/app/_lib/auth-client";
+import { ensureOnboardingComplete } from "@/app/_lib/train-readiness";
 import { fetchUserTrainData } from "./_lib/fetch-user-train-data";
 import { Toolbar } from "@/components/home/toolbar";
 import { LogoutButton } from "@/components/profile/logout-button";
 import { ProfileMetricCard } from "@/components/profile/profile-metric-card";
+import { ProfileSkeleton } from "@/components/profile/profile-skeleton";
 
 async function ProfileContent() {
   const session = await authClient.getSession({
@@ -20,6 +22,8 @@ async function ProfileContent() {
   if (!session.data?.user) {
     redirect("/auth");
   }
+
+  await ensureOnboardingComplete();
 
   const { user } = session.data;
 
@@ -109,7 +113,7 @@ async function ProfileContent() {
 export default function ProfilePage() {
   return (
     <main className="min-h-svh pb-[108px] font-heading">
-      <Suspense fallback={<p>Carregando...</p>}>
+      <Suspense fallback={<ProfileSkeleton />}>
         <ProfileContent />
       </Suspense>
       <Suspense fallback={null}>
